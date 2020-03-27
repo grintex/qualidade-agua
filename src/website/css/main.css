@@ -2,6 +2,10 @@ body {
     margin:0;
 }
 
+body p {
+    font-size: 1.1em;
+}
+
 img.logo {
     width: 40px;
     height: auto;
