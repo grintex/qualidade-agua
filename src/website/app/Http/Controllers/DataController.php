@@ -25,16 +25,15 @@ class DataController extends Controller
      */
     public function index(Request $request)
     {
-        $cacheDurationSeconds = $this->cache_duration_days * 24 * 60 * 60;
+        $spreadsheets = config('data.spreadsheets');
+        $gs = new GoogleSpreadSheet($spreadsheets);
 
-        $url = config('data.spreadsheet_url');
-        $gs = new GoogleSpreadSheet($url);
+        $ok = $gs->fetchAll();
 
-        $items = $gs->fetch();
+        if(!$ok) {
+            throw new \Exception('Unable to fetch data.');
+        }
 
-        //$items = Cache::remember('spreadhsheet_data', $cacheDurationSeconds, function () {
-        //});
-
-        return $items;
+        return $gs->data();
     }
 }

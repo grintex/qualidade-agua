@@ -14,6 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/ping', 'PingController@index')->name('ping.index');
-Route::get('/stats', 'StatsController@index')->name('stats.index');
-Route::post('/analytics', 'AnalyticsController@store')->name('analytics.store');
+Route::get('/dados', 'DataController@index')->name('data.index');
