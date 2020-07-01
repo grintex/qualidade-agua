@@ -3,45 +3,61 @@
 namespace App\DataSource;
 
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 
 class GoogleSpreadSheet
 {
     /**
-     * List of spreadhsheets
-     *
-     * @var array
-     */
-    protected $sheets = [
-    ];
-
-    /**
-     * URL to publicly available CSV web export of the spreasheet.
      *
      * @var string
      */
-    protected $spreadsheet_url = '';
+    protected $spreadsheets = [];
+
+    /**
+     * Undocumented variable
+     *
+     * @var array
+     */
+    protected $spreadsheets_data = [];
+
     
     /**
      * Undocumented function
      *
      * @param string $spreadsheetURL URL to publicly available CSV web export of the spreasheet.
      */
-    public function __construct($spreadsheet_url, $sheets = [])
+    public function __construct(array $spreadsheets)
     {
-        if(empty($spreadsheet_url)) {
-            throw new \Exception('Invalid spreadsheet URL');
+        if(count($spreadsheets) == 0) {
+            throw new \Exception('Invalid spreadsheets info');
         }
 
-        $this->spreadsheet_url = $spreadsheet_url;
-        $this->sheets = $sheets;
+        $this->spreadsheets = $spreadsheets;
     }
 
-    public function fetch()
+    protected function assetSpreadsheetKeyExists($spreadsheet_key)
     {
-        $url = $this->spreadsheet_url;
-        
-        $curl = curl_init($url);
+        if(!isset($this->spreadsheets[$spreadsheet_key])) {
+            throw new \Exception("Unknown spreadsheet with key '$spreadsheet_key'.");
+        }
+    }
 
+    public function data($spreadsheet_key = null)
+    {
+        if($spreadsheet_key === null) {
+            return $this->spreadsheets_data;
+        }
+
+        $this->assetSpreadsheetKeyExists($spreadsheet_key);
+
+        $data = $this->spreadsheets_data[$spreadsheet_key];
+        return $data;
+    }
+
+    protected function getContentFromURL($url)
+    {
+        $curl = curl_init($url);
+    
         $caPathOrFile = \Composer\CaBundle\CaBundle::getSystemCaRootBundlePath();
         
         if (is_dir($caPathOrFile)) {
@@ -53,26 +69,80 @@ class GoogleSpreadSheet
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
 
-        $spreadsheet_raw_content = curl_exec($curl);
+        $content = curl_exec($curl);
 
-        if($spreadsheet_raw_content === false) {
-            throw new \Exception('Unable to fetch spreadsheet data from:' . $url);
+        return $content;
+    }
+
+    public function parseAsTSV($contents)
+    {
+        $hash = md5($contents);
+        $fileName = $hash . '.tsv';
+
+        // Um hack para garantir quebras de linha no conteúdo
+        // da planilha. Me julgue.
+        Storage::disk('local')->put($fileName, $contents);
+        $path = Storage::disk('local')->path($fileName);
+        $lines = file($path);
+
+        $csv = [];
+        foreach($lines as $line) {
+            $cleanLine = str_replace(["\r\n", "\r", "\n"], ' ', $line);
+            $csv[] = str_getcsv($cleanLine, "\t");
         }
+
+        return $csv;
+    }
+
+    public function fetch($spreadsheet_key)
+    {
+        $this->assetSpreadsheetKeyExists($spreadsheet_key);
         
-        $spreadsheet_lines = preg_split('/\r\n|\r|\n/', $spreadsheet_raw_content);
-        $csv = array_map('str_getcsv', $spreadsheet_lines);
-        $items = [];
-        $header = $csv[0];
+        $spreadsheet = $this->spreadsheets[$spreadsheet_key];
 
-        foreach($csv as $index => $line) {
-            if($index == 0) {
-                // ignore header
-                continue;
-            }
+        $url = $spreadsheet['url'];
+        $headerAt = $spreadsheet['header_at'];
+        $dataStartsAt = $spreadsheet['data_starts_at'];
+    
+        $rawContent = $this->getContentFromURL($url);
 
-            $items[] = array_combine($header, $line);
+        if($rawContent === false) {
+            return false;
         }
 
-        return $items;
+        $csv = $this->parseAsTSV($rawContent);
+
+        $items = [];
+        $header = $csv[$headerAt];
+
+        for($line = $dataStartsAt, $size = count($csv); $line < $size; $line++) {
+            if(count($header) != count($csv[$line])) {
+                throw new \Exception("Unable to bind header with rows for spreadsheet with key '$spreadsheet_key'.");
+            }
+            $items[] = array_combine($header, $csv[$line]);
+        }
+
+        $this->spreadsheets_data[$spreadsheet_key] = $items;
+
+        return true;
+    }
+
+    public function fetchAll()
+    {
+        $failures = 0;
+
+        if(count($this->spreadsheets) == 0) {
+            return false;
+        }
+
+        foreach($this->spreadsheets as $key => $spreadsheet) {
+            $ok = $this->fetch($key);
+
+            if(!$ok) {
+                $failures++;
+            }
+        }
+
+        return $failures == 0;
     }
 }
