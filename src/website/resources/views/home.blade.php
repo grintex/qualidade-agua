@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <title>Qualidade da Água</title>
@@ -7,12 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta charset="utf-8"/>
 
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <!-- External styles -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
-    <link rel="stylesheet" href="./css/bootstrap.min.css">
-    <link rel="stylesheet" href="./css/froala_blocks.min.css">
-    <link rel="stylesheet" href="./css/froala_style.min.css">
-    <link rel="stylesheet" href="./css/waves.css">
-    <link rel="stylesheet" href="./css/main.css">
+    
+    <!-- Local styles -->
+    <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/froala_blocks.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/froala_style.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/waves.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 </head>
 
 <body>
@@ -20,7 +26,7 @@
         <div class="container">
             <nav class="navbar navbar-expand-md no-gutters">
                 <div class="col-3 text-left">
-                    <a href="#"><img src="./img/logo/profile.png" title="Logo Qualidade das Águas" class="logo" /></a>
+                    <a href="#"><img src="{{ asset('/img/logo/profile.png') }}" title="Logo Qualidade das Águas" class="logo" /></a>
                 </div>
 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav4"
@@ -83,7 +89,7 @@
 
     <div class="header-waves">
         <div class="inner-header flex">
-            <img src="./img/logo/vector/isolated-monochrome-white.svg" title="Logo Qualidade das Águas" />
+            <img src="{{ asset('img/logo/vector/isolated-monochrome-white.svg') }}" title="Logo Qualidade das Águas" />
             <h1>Qualidade das Águas</h1>
             <p class="subtitle">A água é de vital importância para a vida de todos. O monitoramento, cuidado e preservação desse recurso natural é essencial.</p>
  
