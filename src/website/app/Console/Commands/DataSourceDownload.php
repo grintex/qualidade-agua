@@ -160,6 +160,17 @@ class DataSourceDownload extends Command
     {
         $pdo = DB::connection()->getPdo();
 
+        $this->comment('  Dropping table ' . $name);
+        $sql = 'DROP TABLE IF EXISTS '. $name;
+        $pdo->exec($sql);
+
+        $this->createTable($name, $columns, $schema);
+    }
+
+    private function createTable($name, $columns, $schema)
+    {
+        $pdo = DB::connection()->getPdo();
+
         $items = [];
 
         foreach($columns as $column) {
@@ -168,10 +179,6 @@ class DataSourceDownload extends Command
 
             $items[] = $def;
         }
-
-        $this->comment('  Dropping table ' . $name);
-        $sql = 'DROP TABLE IF EXISTS '. $name;
-        $pdo->exec($sql);
 
         $this->comment('  Creating table ' . $name);
         $sql = 'CREATE TABLE IF NOT EXISTS '. $name .' ('. implode(', ', $items).');';
@@ -225,14 +232,18 @@ class DataSourceDownload extends Command
 
             $this->info("- $table");
 
+            // Se for a primeirissima vez que estamos sincronizando, precisamos criar
+            // a tabela (se ela não existir), porque o banco pode estar vazio
+            $this->createTable($table, $columns, $schema);
+
+
+            // Inserimos todos os dados em uma tabela temporária, depois usamos
+            // ela para substituir a tabela oficial.
             $tableTemp = $table . '__TEMP';
 
             $this->dropThenCreateTable($tableTemp, $columns, $schema);
             $this->insertIntoTable($tableTemp, $columns, $insertValues);
-
             $this->mvTable($tableTemp, $table);
-
-            exit();
         }
     }
 }
