@@ -2,11 +2,10 @@
 
 namespace App;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class Source extends Model
 {
     use Notifiable;
 
@@ -16,7 +15,11 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'uuid',
+        'owner',
+        'url',
+        'table',
+        'name',
+        'schema'
     ];
 
     /**

@@ -22,6 +22,10 @@ return [
             'url' => env('DATA_SPREADSHEET_URL') . '?gid=0&single=true&output=tsv',
             'header_at' => 2,
             'data_starts_at' => 4,
+            'schema' => [
+                'types' => [],
+                'indexes' => [],
+            ]
         ],
 
         'uso_subterraneas' => [

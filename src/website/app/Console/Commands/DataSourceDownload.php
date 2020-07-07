@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 use App\DataSource\GoogleSpreadSheet;
 
 class DataSourceDownload extends Command
@@ -45,7 +46,7 @@ class DataSourceDownload extends Command
         $this->info("Fetching data from spreadsheets");
 
         foreach($spreadsheets as $table => $settings) {
-            $this->info("* $table");
+            $this->info("- $table");
             $this->comment("  name: ${settings['name']}");
             $this->comment("  url: ${settings['url']}");
         }
@@ -58,7 +59,9 @@ class DataSourceDownload extends Command
         }
 
         $data = $gs->data();
-        $this->insertIntoDatabase($data);
+        
+        $this->info("\nPlacing data into database");
+        $this->insertIntoDatabase($data, $spreadsheets);
 
         $this->info("Finished successfully");
         exit(0);
@@ -111,18 +114,125 @@ class DataSourceDownload extends Command
         return $out;
     }
 
-    private function insertIntoDatabase($spreadsheetsData)
+    private function getSchema($tableName, $config)
     {
+        $schema = [
+            'type' => [],
+            'indexes' => []
+        ];
+
+        if(isset($config[$tableName]['schema'])) {
+            $schema = $config[$tableName]['schema'];
+        }
+
+        return $schema;
+    }
+
+    private function castValuesUsingSchema($columns, $values, $schema)
+    {
+        return $values;
+    }
+
+    private function mvTable($oldTable, $newTable)
+    {
+        $pdo = DB::connection()->getPdo();
+
+        $newTableTemp = $newTable . '__REMOVE';
+
+        $pdo->beginTransaction();
+
+        $this->comment("  Renaming table $newTable to $newTableTemp");
+        $sql = "ALTER TABLE $newTable RENAME TO $newTableTemp";
+        $pdo->exec($sql);
+
+        $this->comment("  Renaming table $oldTable to $newTable");
+        $sql = "ALTER TABLE $oldTable RENAME TO $newTable";
+        $pdo->exec($sql);
+
+        $this->comment('  Dropping table ' . $newTableTemp);
+        $sql = "DROP TABLE IF EXISTS $newTableTemp";
+        $pdo->exec($sql);
+
+        $pdo->commit();
+    }
+
+    private function dropThenCreateTable($name, $columns, $schema)
+    {
+        $pdo = DB::connection()->getPdo();
+
+        $items = [];
+
+        foreach($columns as $column) {
+            $type = isset($schema['types'][$column]) ? $schema['types'][$column] : 'TEXT';
+            $def = "$column $type NOT NULL";
+
+            $items[] = $def;
+        }
+
+        $this->comment('  Dropping table ' . $name);
+        $sql = 'DROP TABLE IF EXISTS '. $name;
+        $pdo->exec($sql);
+
+        $this->comment('  Creating table ' . $name);
+        $sql = 'CREATE TABLE IF NOT EXISTS '. $name .' ('. implode(', ', $items).');';
+        $pdo->exec($sql);
+    }
+
+    private function insertIntoTable($table, $columns, $rows)
+    {
+        $pdo = DB::connection()->getPdo();
+
+        $insertColumns = implode(', ', $columns);
+            
+        $insertQuestionMarks = str_repeat('?,', count($columns));
+        $insertQuestionMarks = substr($insertQuestionMarks, 0, -1);
+
+        $sql = "INSERT INTO $table ($insertColumns) VALUES ($insertQuestionMarks)";
+        $stmt = $pdo->prepare($sql);
+        
+        $this->comment(sprintf('  Adding %d rows', count($rows)));
+
+        $pdo->beginTransaction();
+
+        foreach($rows as $values) {
+            $stmt->execute($values);
+        }
+
+        $pdo->commit();
+    }
+
+    private function insertIntoDatabase($spreadsheetsData, $config)
+    {
+        $pdo = DB::connection()->getPdo();
+
         if(count($spreadsheetsData) == 0) {
             throw new \Exception('Unable to insert spreadsheet data into database, invalid source.');
         }
 
         foreach($spreadsheetsData as $table => $rows) {
+            $schema = $this->getSchema($table, $config);
+            $insertValues = [];
+             
             foreach($rows as $row) {
                 $names = array_keys($row);
-                $values = array_values($row);
                 $columns = $this->slugfyArray($names);
+
+                $values = array_values($row);
+                $values = $this->castValuesUsingSchema($columns, $values, $schema);
+                
+                $insertValues[] = $values;
             }
+
+            $this->info("- $table");
+
+            $tableTemp = $table . '__TEMP';
+
+            $this->dropThenCreateTable($tableTemp, $columns, $schema);
+            $this->insertIntoTable($tableTemp, $columns, $insertValues);
+
+            $this->mvTable($tableTemp, $table);
+
+            exit();
         }
     }
 }
