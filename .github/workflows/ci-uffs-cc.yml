@@ -54,7 +54,7 @@ jobs:
     - name: Deploy app via SSH
       uses: garygrossgarten/github-action-scp@release
       with:
-        local: ${{ github.workspace }}/
+        local: ${{ github.workspace }}/src/website/
         remote: ${{ env.BUILD_WEB_DIRECTORY }}/${{ steps.extract_branch.outputs.branch }}/${{ github.sha }}/
         host: ${{ env.BUILD_HOST }}
         username: ${{ secrets.CI_USERNAME }}

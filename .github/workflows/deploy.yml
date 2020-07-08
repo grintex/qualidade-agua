@@ -21,3 +21,6 @@ jobs:
         script: |
           cd ${{ env.PROD_WEB_DIRECTORY }}
           git pull
+          cd src/website
+          php-7.3 ~/.php/composer/composer install -q --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+          php-7.3 artisan migrate
