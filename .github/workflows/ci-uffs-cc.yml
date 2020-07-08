@@ -18,6 +18,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+    - name: Navigate to website folder
+      run: cd src/website
     - name: Setup ENV Laravel Configuration for CI
       run: |
         php -r "file_exists('.env') || copy('.env.ci', '.env');"
