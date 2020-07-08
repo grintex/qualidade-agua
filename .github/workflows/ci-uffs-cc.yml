@@ -18,10 +18,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
+    - name: Setup PHP env
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'
     - name: Navigate to website folder
-      run: cd src/website
+      run: |
+        cd src/website
+        pwd
     - name: Setup ENV Laravel Configuration for CI
       run: |
+        php -v
         php -r "file_exists('.env') || copy('.env.ci', '.env');"
         echo 'DB_DATABASE=${{ github.workspace }}/database/database.sqlite' >> .env
     - name: Install Dependencies (PHP vendors)
