@@ -19,6 +19,8 @@
     <link rel="stylesheet" href="{{ asset('css/froala_style.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/waves.css') }}">
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+
+    @livewireStyles
 </head>
 
 <body>
@@ -97,7 +99,7 @@
                 <div class="row justify-content-center">
                     <div class="col-12 col-md-8 col-lg-6 text-center">
                         <div class="input-group mt-4 mb-4">
-                            <input type="text" class="form-control" placeholder="Ex.: Chapecó ou Rio Uruguai">
+                            <input type="text" class="form-control basicAutoComplete" data-url="{{ route('api.search') }}" autocomplete="off" placeholder="Ex.: Chapecó ou Rio Uruguai">
                             <div class="input-group-append">
                                 <button class="btn btn-primary" type="button"><i class="fa fa-search"></i> Pesquisar</button>
                             </div>
@@ -264,8 +266,13 @@
             </div>
         </div>
     </footer>
-
+    
+    <script src="{{ asset('js/jquery/jquery-3.5.1.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('js/bootstrap/bootstrap-autocomplete.min.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
     <script src="https://use.fontawesome.com/releases/v5.5.0/js/all.js"></script>
+    @livewireScripts
 </body>
 
 </html>

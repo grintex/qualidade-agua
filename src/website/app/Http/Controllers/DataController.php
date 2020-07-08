@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
-use App\DataSource\GoogleSpreadSheet;
+use Illuminate\Support\Facades\DB;
 
 class DataController extends Controller
 {
@@ -25,15 +25,26 @@ class DataController extends Controller
      */
     public function index(Request $request)
     {
-        $spreadsheets = config('data.spreadsheets');
-        $gs = new GoogleSpreadSheet($spreadsheets);
+        $pdo = DB::connection()->getPdo();
+        
+        return ['test' => 'dd'];
+    }
 
-        $ok = $gs->fetchAll();
-
-        if(!$ok) {
-            throw new \Exception('Unable to fetch data.');
-        }
-
-        return $gs->data();
+    /**
+     * 
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request)
+    {
+        $pdo = DB::connection()->getPdo();
+        $input = $request->all();
+        
+        return [
+            ['id' => 1, 'text' => 'Google Cloud Platform', 'icon' => 'https://pbs.twimg.com/profile_images/966440541859688448/PoHJY3K8_400x400.jpg'],
+            ['id' => 2, 'text' => 'Amazon', 'icon' => 'https://pbs.twimg.com/profile_images/966440541859688448/PoHJY3K8_400x400.jpg'],
+            ['id' => 3, 'text' => 'Docker', 'icon' => 'https://pbs.twimg.com/profile_images/966440541859688448/PoHJY3K8_400x400.jpg']
+        ];
     }
 }
