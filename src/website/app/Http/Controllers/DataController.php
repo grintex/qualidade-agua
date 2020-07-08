@@ -39,12 +39,29 @@ class DataController extends Controller
     public function search(Request $request)
     {
         $pdo = DB::connection()->getPdo();
-        $input = $request->all();
+        $term = $request->get('q', '');
+
+        $stmt = $pdo->prepare("
+            SELECT
+                *
+            FROM
+                dados_coletados
+            WHERE
+                identificacao_corpo_hidrico LIKE :term OR
+                bacia LIKE :term OR
+                municipio LIKE :term
+            GROUP BY
+                identificacao_corpo_hidrico, bacia, municipio, ponto_referencia
+            LIMIT 10");
         
-        return [
-            ['id' => 1, 'text' => 'Google Cloud Platform', 'icon' => 'https://pbs.twimg.com/profile_images/966440541859688448/PoHJY3K8_400x400.jpg'],
-            ['id' => 2, 'text' => 'Amazon', 'icon' => 'https://pbs.twimg.com/profile_images/966440541859688448/PoHJY3K8_400x400.jpg'],
-            ['id' => 3, 'text' => 'Docker', 'icon' => 'https://pbs.twimg.com/profile_images/966440541859688448/PoHJY3K8_400x400.jpg']
-        ];
+        $stmt->bindValue(':term', '%' . $term . '%');
+        $stmt->execute();
+
+        $result = [];
+        
+        while($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $result[] = $row;
+        }
+        return $result;
     }
 }

@@ -97,7 +97,7 @@
  
             <div class="container">
                 <div class="row justify-content-center">
-                    <div class="col-12 col-md-8 col-lg-6 text-center">
+                    <div class="col-12 col-md-10 col-lg-8 text-center">
                         <div class="input-group mt-4 mb-4">
                             <input type="text" class="form-control basicAutoComplete" data-url="{{ route('api.search') }}" autocomplete="off" placeholder="Ex.: Chapecó ou Rio Uruguai">
                             <div class="input-group-append">
