@@ -165,31 +165,11 @@ A planilha contém dados muito heterogêneos. Isso quer dizer que, para algumas 
 
 Fora a aba `1-Dados coletados`, as demais abas contém informações relevantes para o projeto, como siglas, parâmetros permitidos para uma determinada medição (por exemplo, qual o pH mínimo e máximo), etc.
 
-
-#### Rodando o projeto
-
-Finalmente, após seguido os passos anteriores, gere os recursos JavaScript e CSS:
-```
-npm run dev
-```
-
-e por fim inicie o servidor do Laravel:
-
-```
-php artisan serve
-```
-Após isso a aplicação estará rodando na porta 8000 e poderá ser acessada em [localhost:8000](http://localhost:8000).
-
-### Documentação da API
-
-A documentação dos endpoints da API estão disponíveis [aqui](https://documenter.getpostman.com/view/11057697/TVetbmFy)
-
 ## Contribua
 
-Sua ajuda é muito bem-vinda, independente da forma! Confira o arquivo [CONTRIBUTING.md](CONTRIBUTING.md) para conhecer todas as formas de contribuir com o projeto. Por exemplo, [sugerir uma nova funcionalidade](https://github.com/grintex/template/issues/new?assignees=&labels=&template=feature_request.md&title=), [reportar um problema/bug](https://github.com/grintex/template/issues/new?assignees=&labels=bug&template=bug_report.md&title=), [enviar um pull request](https://github.com/grintex/hacktoberfest/blob/master/docs/tutorial-pull-request.md), ou simplemente utilizar o projeto e comentar sua experiência.
+Sua ajuda é muito bem-vinda, independente da forma! Confira o arquivo [CONTRIBUTING.md](CONTRIBUTING.md) para conhecer todas as formas de contribuir com o projeto. Por exemplo, [sugerir uma nova funcionalidade](https://github.com/grintex/qualidade-agua/issues/new?assignees=&labels=&template=feature_request.md&title=), [reportar um problema/bug](https://github.com/grintex/qualidade-agua/issues/new?assignees=&labels=bug&template=bug_report.md&title=), [enviar um pull request](https://github.com/grintex/hacktoberfest/blob/master/docs/tutorial-pull-request.md), ou simplemente utilizar o projeto e comentar sua experiência.
 
 Veja o arquivo [ROADMAP.md](ROADMAP.md) para ter uma ideia de como o projeto deve evoluir.
-
 
 ## Licença
 
@@ -199,10 +179,8 @@ Esse projeto é licenciado nos termos da licença open-source [Apache 2.0](https
 
 Veja todas as alterações desse projeto no arquivo [CHANGELOG.md](CHANGELOG.md).
 
-## Projetos semelhates
+## Links e projetos úteis
 
 Abaixo está uma lista de links interessantes e projetos similares:
 
-* [Outro projeto](https://github.com/projeto)
-* [Projeto inspiração](https://github.com/projeto)
-* [Ferramenta semelhante](https://github.com/projeto)
+* [Universidade Federal da Fronteira Sul](https://www.uffs.edu.br)
