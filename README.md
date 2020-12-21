@@ -1,12 +1,13 @@
 <p align="center">
-    <img width="400" height="200" src=".github/logo.png" title="Logo do projeto"><br />
+    <img width="800" src=".github/logo.jpg" title="Logo do projeto"><br />
     <img src="https://img.shields.io/maintenance/yes/2020?style=for-the-badge" title="Status do projeto">
-    <img src="https://img.shields.io/github/workflow/status/grintex/template/Main?label=Build&logo=github&logoColor=white&style=for-the-badge" title="Status do build">
+    <img src="https://img.shields.io/github/workflow/status/grintex/qualidade-agua/Main?label=Build&logo=github&logoColor=white&style=for-the-badge" title="Status do build de CI">
+    <img src="https://img.shields.io/github/workflow/status/grintex/qualidade-agua/Main?label=Deploy&logo=laravel&logoColor=white&style=for-the-badge" title="Status do deploy">
 </p>
 
-# Qualidade das Águas do RS
+# Qualidade Águas
 
-Esse repositório contém os códigos referentes ao projeto de monitoramento da qualidade das águas do estado do Rio Grande do Sul, desenvolvido como projeto de pesquisa na [Universidade Federal da Fronteira Sul](https://www.uffs.edu.br).
+Esse repositório contém os códigos da plataforma desenvolvida no contexto do projeto de pesquisa _Criação de plataforma para consulta da qualidade das águas subterrâneas, superficiais e de abastecimento do Estado do Rio Grande do Sul_, registrado sob o número _PES-2020-0516_	na [Universidade Federal da Fronteira Sul](https://www.uffs.edu.br) (UFFS) e coordenado pela professora Manuela Gomes Cardoso, da UFFS campus Cerro Largo.
 
 ## Começando
 
@@ -14,9 +15,9 @@ Esse repositório contém os códigos referentes ao projeto de monitoramento da 
 
 Para executar o projeto, inicialmente será preciso instalar as seguintes dependências:
 
-- [Git](https://git-scm.com);
-- [PHP](https://www.php.net/downloads);
-- [Composer](https://getcomposer.org/download/);
+- [Git](https://git-scm.com)
+- [PHP](https://www.php.net/downloads)
+- [Composer](https://getcomposer.org/download/)
 
 Se você estiver num ambiente Linux, provalmente consiga instalar tudo com os seguintes comandos:
 
@@ -82,7 +83,7 @@ Em seguida será preciso configurar a interação entre o projeto e suas depend�
 cd src/website
 ```
 
-#### PHP
+#### 2.1 PHP
 
 Instale as dependências do PHP usando o comando abaixo:
 
@@ -90,7 +91,7 @@ Instale as dependências do PHP usando o comando abaixo:
 composer install
 ```
 
-#### Laravel
+#### 2.2 Laravel
 
 Crie o arquivo `.env` a partir do arquivo `.env.example` gerado automaticamente pelo Laravel:
 
@@ -128,7 +129,7 @@ Na sequencia execute geração da chave de autenticação da aplicação:
 php artisan key:generate
 ```
 
-#### Baixar dados da planilha de águas
+#### 2.3 Baixar dados da planilha de águas
 
 O projeto utiliza os dados informados em uma [planilha do Google Spreadsheets](https://docs.google.com/spreadsheets/d/1CDgeHyoxV64-NLoJyg7eYmtzPKrVfh-s5mOUpshmk4A/edit#gid=0). Você pode facilmente baixar esses dados de uma planilha de desenvolvimento e atualizar o banco de dados rodando o seguinte:
 
@@ -140,7 +141,7 @@ Se a planilha de desenvolvimento for atualizada ou alterada, basta rodar o coman
 
 Os dados dessa planilha estão disponíveis abertamente em formato CSV através dessa URL.
 
-#### Rodando o projeto
+### 3 Rodando o projeto
 
 Depois que tudo estiver instalado e os dados da planilha baixados, você pode rodar o projeto com o comando:
 
@@ -150,8 +151,7 @@ php artisan serve
 
 O site deve ficar disponível na URL [http://localhost:8000](http://localhost:8000).
 
-
-### 3. Planilha de dados
+### 4. Planilha de dados
 
 Todos os dados utilizados pelo website são baseados em uma [planilha online](https://docs.google.com/spreadsheets/d/1CDgeHyoxV64-NLoJyg7eYmtzPKrVfh-s5mOUpshmk4A/edit?usp=sharing) que agrega todas as medições que o projeto coletou.
 
@@ -163,7 +163,7 @@ Eles correspondem a uma medição de `Alcalinidade de bicarbonatos` (coluna 10),
 
 A planilha contém dados muito heterogêneos. Isso quer dizer que, para algumas medições, pode-se ter a bacia mas não o município, ou tem-se um ponto de referÊncia e não se tem a bacia, etc.
 
-Fora a aba `1-Dados coletados`, as demais abas contém informações relevantes para o projeto, como siglas, parâmetros permitidos para uma determinada medição (por exemplo, qual o pH mínimo e máximo), etc.
+Fora a aba `1-Dados coletados`, as demais abas contém informações que não são medições, como siglas, parâmetros permitidos para uma determinada medição (por exemplo, qual o pH mínimo e máximo), etc.
 
 ## Contribua
 
