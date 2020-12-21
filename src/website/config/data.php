@@ -38,8 +38,8 @@ return [
         'classes_superficiais' => [
             'name' => '3 - Classes das superficiais',
             'url' => env('DATA_SPREADSHEET_URL') . '?gid=808541941&single=true&output=tsv',
-            'header_at' => 3,
-            'data_starts_at' => 4,
+            'header_at' => 2,
+            'data_starts_at' => 3,
         ],
 
         'parametros_abastecimento' => [
@@ -65,7 +65,7 @@ return [
 
         'parametros_abastecimento_rs' => [
             'name' => '7 - Parâmetros para abastecimento - RS',
-            'url' => env('DATA_SPREADSHEET_URL') . '?gid=450891538&single=true&output=tsv',
+            'url' => env('DATA_SPREADSHEET_URL') . '?gid=1347279514&single=true&output=tsv',
             'header_at' => 1,
             'data_starts_at' => 2,
         ]
