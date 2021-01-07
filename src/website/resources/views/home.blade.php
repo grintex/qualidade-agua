@@ -19,8 +19,6 @@
     <link rel="stylesheet" href="{{ asset('css/froala_style.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/waves.css') }}">
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
-
-    @livewireStyles
 </head>
 
 <body>
@@ -272,7 +270,6 @@
     <script src="{{ asset('js/bootstrap/bootstrap-autocomplete.min.js') }}"></script>
     <script src="{{ asset('js/app.js') }}"></script>
     <script src="https://use.fontawesome.com/releases/v5.5.0/js/all.js"></script>
-    @livewireScripts
 </body>
 
 </html>
